@@ -28,7 +28,7 @@
 
 void vandyStyle(){
 
-cout << "Welcome to Vandy Heavy Ion group!! " << endl;
+cout << "Welcome to Vandy Heavy Ion group!!! " << endl;
 
 }
 

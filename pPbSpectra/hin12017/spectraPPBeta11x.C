@@ -57,6 +57,7 @@ void spectraPPBeta11x(){
     gPad->SetLogy(1);
   }
 
+  vandyStyle();
   TCanvas* c1 = makeMultiCanvas("c1","c1", true, true);
   TH1D *htemp = makeHist("htemp", "", "p_{T} (GeV/c)", "Yield", 200, 0.3, 150, kBlack);
   htemp->SetAxisRange(1e-13,950,"Y");
