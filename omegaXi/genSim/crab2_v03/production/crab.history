@@ -1,0 +1,8 @@
+160222_182121: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -create
+160222_182235: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -submit 1-500 -c multiStrangePYTHIA_500Mcrab2_v03/
+160222_182325: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -submit 501-1000 -c multiStrangePYTHIA_500Mcrab2_v03/
+160222_182417: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -submit 1001-1500 -c multiStrangePYTHIA_500Mcrab2_v03/
+160222_182539: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -submit 1501-2000 -c multiStrangePYTHIA_500Mcrab2_v03/
+160222_182648: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -submit 2001-2500 -c multiStrangePYTHIA_500Mcrab2_v03/
+160222_182854: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -status -c multiStrangePYTHIA_500Mcrab2_v03/
+160222_183659: /cvmfs/cms.cern.ch/crab/CRAB_2_11_1_patch1/python/crab.py -status -c multiStrangePYTHIA_500Mcrab2_v03/
