@@ -59,44 +59,38 @@ TH1D *nVz1PtHist = new TH1D("nvz1pthist","generalTracks pT Distribution", nPtBin
 TH1D *vzHistNoES = new TH1D("vzhistnoes","generalTracks pT Distribution", 100, -25,25);
 TH1D *vzHistnVz1 = new TH1D("vzhistnvz1","generalTracks pT Distribution", 100, -25,25);
 
-TH1D *ptHistHits = new TH1D("pthisthits","generalTracks pT Distribution", nPtBin, ptBins);
-TH1D *nVz1PtHistHits = new TH1D("nvz1pthisthits","generalTracks pT Distribution", nPtBin, ptBins);
 TH1D *ptHistCalo = new TH1D("pthistcalo","generalTracks pT Distribution", nPtBin, ptBins);
 TH1D *nVz1PtHistCalo = new TH1D("nvz1pthistcalo","generalTracks pT Distribution", nPtBin, ptBins);
+TH1D *gPtVtxptHistCalo = new TH1D("gptvtxpthistcalo","generalTracks pT Distribution", nPtBin, ptBins);
+TH1D *allVtxptHistCalo = new TH1D("allvtxpthistcalo","generalTracks pT Distribution", nPtBin, ptBins);
+
+TH1D *proIDnVtx0Hist = new TH1D("proidnvtx0hist","process ID Distribution", 10, 100,110);
+TH1D *proIDnVtxnHist = new TH1D("proidnvtxnhist","process ID Distribution", 10, 100,110);
+TH1D *proIDAllHist = new TH1D("proidallhist","process ID Distribution", 10, 100,110);
+TH1D *proIDESHist = new TH1D("proideshist","process ID Distribution", 10, 100,110);
+
+TH1D *nVzHistNoESWithHLT = new TH1D("nvzhistnoeswithhlt","generalTracks pT Distribution", 10, 0,10);
+TH1D *proIDnVtx0HLTHist = new TH1D("proidnvtx0hlthist","process ID Distribution", 10, 100,110);
+TH1D *proIDnVtxnHLTHist = new TH1D("proidnvtxnhlthist","process ID Distribution", 10, 100,110);
+TH1D *proIDHLTHist = new TH1D("proidhlthist","process ID Distribution", 10, 100,110);
+TH1D *proIDHLTESHist = new TH1D("proidhlteshist","process ID Distribution", 10, 100,110);
 
 const Int_t maxn = 90000;
-  Float_t b, sumethf, sume3gev;
-  Float_t npart, ncoll;
-  Int_t nhreco, nhgen, nhf;
-  Float_t ptreco[maxn], etareco[maxn], phireco[maxn];
-  Float_t ptgen[maxn], etagen[maxn], phigen[maxn];
-  Float_t ethf[maxn], ehf[maxn], etahf[maxn], phihf[maxn];
-  Float_t gb, gsumethf, gsume3gev;
-  Float_t gnpart, gncoll;
-  Int_t gnhreco, gnhgen, gnhf;
-  Float_t gptreco[maxn], getareco[maxn], gphireco[maxn];
-  Float_t gptgen[maxn], getagen[maxn], gphigen[maxn];
-  Float_t gethf[maxn], gehf[maxn], getahf[maxn], gphihf[maxn];
-
-Bool_t highPurity[maxn];
-Float_t a1[maxn], a2[maxn],a3[maxn],a4[maxn],a5[maxn],a6[maxn];
-Int_t nhNtrk;
-
-Int_t HLT_PAZeroBiasPixel_SingleTrack_v1=0;
-Int_t phltPixelClusterShapeFilter=0;
-Int_t phfPosFilter1=0;
-Int_t phfNegFilter1=0;
-Int_t pprimaryvertexFilter=0;
-Int_t Run=0;
-Int_t CentBin=-1;
 Float_t vz;
+Int_t processid;
+Int_t HLT_L1MinimumBiasHF1OR_v1;
+Int_t nTrk;
+Float_t trkPt[maxn], trkEta[maxn], trkPhi[maxn];
+Bool_t highPurity[maxn];
+Float_t trkDz1[maxn], trkDzError1[maxn],trkDxy1[maxn],trkDxyError1[maxn],trkPtError[maxn];
+Int_t nTrkTimesnVtx;
+Float_t trkDzOverDzError[maxn], trkDxyOverDxyError[maxn];
+
 
   long Nevt;
-
-
   int pVtx;
   int pBeamScrape;
-  int pnVtx;
+  int nVtx;
   float trkMVA[maxn];
   unsigned char trkNHit[maxn]; 
   float pfEcal[maxn];
@@ -107,67 +101,91 @@ Float_t vz;
   tree->AddFriend("pptrack=ppTrack/trackTree");
   tree->AddFriend("skimTree=skimanalysis/HltTree");
   tree->AddFriend("hltTree=hltanalysis/HltTree");
+  tree->AddFriend("genTree=HiGenParticleAna/hi");
      tree->SetBranchAddress("vz",&vz);
-     tree->SetBranchAddress("nTrk",&nhreco);
-     tree->SetBranchAddress("trkPt",&ptreco);
-     tree->SetBranchAddress("trkEta",&etareco);
-     tree->SetBranchAddress("trkPhi",&phireco);
-     tree->SetBranchAddress("trkDz1",&a1);
-     tree->SetBranchAddress("trkDzError1",&a2);
-     tree->SetBranchAddress("trkDxy1",&a3);
-     tree->SetBranchAddress("trkDxyError1",&a4);
-     tree->SetBranchAddress("trkPtError",&a5);
+     tree->SetBranchAddress("processid",&processid);
+     tree->SetBranchAddress("HLT_L1MinimumBiasHF1OR_v1",&HLT_L1MinimumBiasHF1OR_v1);
+     tree->SetBranchAddress("nTrk",&nTrk);
+     tree->SetBranchAddress("trkPt",&trkPt);
+     tree->SetBranchAddress("trkEta",&trkEta);
+     tree->SetBranchAddress("trkPhi",&trkPhi);
+     tree->SetBranchAddress("trkDz1",&trkDz1);
+     tree->SetBranchAddress("trkDzError1",&trkDzError1);
+     tree->SetBranchAddress("trkDxy1",&trkDxy1);
+     tree->SetBranchAddress("trkDxyError1",&trkDxyError1);
+     tree->SetBranchAddress("nTrkTimesnVtx",&nTrkTimesnVtx);
+     tree->SetBranchAddress("trkDzOverDzError",&trkDzOverDzError);
+     tree->SetBranchAddress("trkDxyOverDxyError",&trkDxyOverDxyError);
+     //tree->SetBranchAddress("",&);
+     tree->SetBranchAddress("trkPtError",&trkPtError);
      tree->SetBranchAddress("highPurity",&highPurity);
      tree->SetBranchAddress("trkMVA",&trkMVA);
      tree->SetBranchAddress("trkNHit",&trkNHit);
      tree->SetBranchAddress("pfHcal",&pfHcal);
      tree->SetBranchAddress("pfEcal",&pfEcal);
-     //tree->SetBranchAddress("HLT_PAZeroBiasPixel_SingleTrack_v1",&HLT_PAZeroBiasPixel_SingleTrack_v1);
-     //tree->SetBranchAddress("phltPixelClusterShapeFilter",&phltPixelClusterShapeFilter);
-     //tree->SetBranchAddress("phfPosFilter1",&phfPosFilter1);
-     //tree->SetBranchAddress("phfNegFilter1",&phfNegFilter1);
-     //tree->SetBranchAddress("pprimaryvertexFilter",&pprimaryvertexFilter);
-     //tree->SetBranchAddress("hiHFplusEta4",&hfpluseta4);
-     //tree->SetBranchAddress("hiHFminusEta4",&hfminuseta4);
-     //tree->SetBranchAddress("hiNtracks",&ntrks);
      tree->SetBranchAddress("pPAprimaryVertexFilter",&pVtx);
      tree->SetBranchAddress("pBeamScrapingFilter",&pBeamScrape);
-     tree->SetBranchAddress("nVtx",&pnVtx);
+     tree->SetBranchAddress("nVtx",&nVtx);
      Nevt=tree->GetEntries();  cout<<"Entries= "<<Nevt<<endl;
 
      for(long ne=0; ne<Nevt; ne++){
-     //for(long ne=0; ne<30000; ne++){
+     //for(long ne=0; ne<10000; ne++){
        if(ne%3000==0)  cout<<"Have run "<<ne<<" events. "<<endl;
        tree->GetEntry(ne);
 
-       nVzHistNoES->Fill(pnVtx*pVtx);
+       nVzHistNoES->Fill(nVtx*pVtx);
+       if(HLT_L1MinimumBiasHF1OR_v1==1) 
+         nVzHistNoESWithHLT->Fill(nVtx*pVtx);
        vzHistNoES->Fill(vz);    
+       proIDAllHist->Fill(processid);
+       if(nVtx*pVtx==0)
+         proIDnVtx0Hist->Fill(processid);
+       if(nVtx*pVtx==0 && HLT_L1MinimumBiasHF1OR_v1==1)
+         proIDnVtx0HLTHist->Fill(processid);
+       if(nVtx*pVtx>0)
+         proIDnVtxnHist->Fill(processid);
+       if(nVtx*pVtx>0 && HLT_L1MinimumBiasHF1OR_v1==1)
+         proIDnVtxnHLTHist->Fill(processid);
+       if(pVtx&&pBeamScrape)
+         proIDESHist->Fill(processid); //only ES
+       if(HLT_L1MinimumBiasHF1OR_v1==0) continue;
+         proIDHLTHist->Fill(processid); //only HLT
        if(!(pVtx&&pBeamScrape)) continue;
-         nVzHist->Fill(pnVtx);
+         nVzHist->Fill(nVtx);
          vzHist->Fill(vz);
-         if(pnVtx==1)
+         proIDHLTESHist->Fill(processid);
+         if(nVtx==1)
            vzHistnVz1->Fill(vz);
-         for(int ni=0;ni<nhreco;ni++){
+         for(int ni=0;ni<nTrk;ni++){
 
-           if(highPurity[ni]&&fabs(a1[ni]/a2[ni])<3&&fabs(a3[ni]/a4[ni])<3&&a5[ni]/ptreco[ni]<0.1&&ptreco[ni]>0.4&&fabs(etareco[ni])<2.4){
-             ptHist->Fill(ptreco[ni]);
-             if(pnVtx==1) 
-               nVz1PtHist->Fill(ptreco[ni]);
+           if(!(highPurity[ni]&&trkPtError[ni]/trkPt[ni]<0.3&&trkPt[ni]>0.4&&trkPt[ni]<120.8&&fabs(trkEta[ni])<2.4)) continue;
+
+           if(fabs(trkDz1[ni]/trkDzError1[ni])<3&&fabs(trkDxy1[ni]/trkDxyError1[ni])<3){
+             ptHist->Fill(trkPt[ni]);
+             if(nVtx==1)
+               nVz1PtHist->Fill(trkPt[ni]);             
            }
 
-           if(highPurity[ni]&&fabs(a1[ni]/a2[ni])<3&&fabs(a3[ni]/a4[ni])<3&&a5[ni]/ptreco[ni]<0.3&&ptreco[ni]>0.4&&ptreco[ni]<120.8&&fabs(etareco[ni])<2.4&&((int)trkNHit[ni]>7)&&(trkMVA[ni]>0.5 || trkMVA[ni]==-99)){
-             ptHistHits->Fill(ptreco[ni]);
-             if(pnVtx==1)
-               nVz1PtHistHits->Fill(ptreco[ni]);
+
+           float Et = (pfHcal[ni]+pfEcal[ni])/TMath::CosH(trkEta[ni]);
+           if(!(trkPt[ni]<20 || (Et>0.2*trkPt[ni] && Et>trkPt[ni]-80))) continue; //Calo Matching
+
+           if(fabs(trkDz1[ni]/trkDzError1[ni])<3&&fabs(trkDxy1[ni]/trkDxyError1[ni])<3){
+             ptHistCalo->Fill(trkPt[ni]);
+             if(nVtx==1)
+               nVz1PtHistCalo->Fill(trkPt[ni]);             
+             gPtVtxptHistCalo->Fill(trkPt[ni]); 
            }
 
-           float Et = (pfHcal[ni]+pfEcal[ni])/TMath::CosH(etareco[ni]);
-           //if(!(trkPt[ni]<20 || (Et>0.2*trkPt[ni] && Et>trkPt[ni]-80))) continue; //Calo Matching
-           if(highPurity[ni]&&fabs(a1[ni]/a2[ni])<3&&fabs(a3[ni]/a4[ni])<3&&a5[ni]/ptreco[ni]<0.3&&ptreco[ni]>0.4&&ptreco[ni]<120.8&&fabs(etareco[ni])<2.4&&(ptreco[ni]<20 || (Et>0.2*ptreco[ni] && Et>ptreco[ni]-80))){
-             ptHistCalo->Fill(ptreco[ni]);
-             if(pnVtx==1)
-               nVz1PtHistCalo->Fill(ptreco[ni]);
-           }
+           bool isCompatibleWithVertex = false;
+           for(int v = 0; v<nVtx; v++){
+             if(TMath::Abs(trkDxyOverDxyError[ni*nVtx+v])<3 && TMath::Abs(trkDzOverDzError[ni*nVtx+v])<3){
+               isCompatibleWithVertex = true;
+               break;
+             }
+           }          
+           if(!isCompatibleWithVertex) continue;
+           allVtxptHistCalo->Fill(trkPt[ni]);
 
          }
      }
@@ -184,10 +202,19 @@ outFileName = outFile;
   nVz1PtHist->Write();
   vzHistNoES->Write();
   vzHistnVz1->Write();
-  ptHistHits->Write();
-  nVz1PtHistHits->Write();
   ptHistCalo->Write();
   nVz1PtHistCalo->Write();
+  gPtVtxptHistCalo->Write();
+  allVtxptHistCalo->Write();
+  proIDnVtx0Hist->Write();
+  proIDnVtxnHist->Write();
+  proIDAllHist->Write();
+  proIDESHist->Write();
+  nVzHistNoESWithHLT->Write();
+  proIDnVtx0HLTHist->Write();
+  proIDnVtxnHLTHist->Write();
+  proIDHLTHist->Write();
+  proIDHLTESHist->Write();
   outFiles->Close();
 
   delete vzHist;
@@ -197,10 +224,19 @@ outFileName = outFile;
   delete nVz1PtHist;
   delete vzHistNoES;
   delete vzHistnVz1;
-  delete ptHistHits;
-  delete nVz1PtHistHits;
   delete ptHistCalo;
   delete nVz1PtHistCalo;
+  delete gPtVtxptHistCalo;
+  delete allVtxptHistCalo;
+  delete proIDnVtx0Hist;
+  delete proIDnVtxnHist;
+  delete proIDAllHist;
+  delete proIDESHist;
+  delete nVzHistNoESWithHLT;
+  delete proIDnVtx0HLTHist;
+  delete proIDnVtxnHLTHist;
+  delete proIDHLTHist;
+  delete proIDHLTESHist;
 
 }
 
