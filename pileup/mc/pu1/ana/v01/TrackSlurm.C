@@ -69,6 +69,10 @@ TH1D *allVtxptHistCalo = new TH1D("allvtxpthistcalo","generalTracks pT Distribut
 TH1D *allVtxptHistCaloSD = new TH1D("allvtxpthistcalosd","generalTracks pT Distribution", nPtBin, ptBins);
 TH1D *allVtxptHistCaloDD = new TH1D("allvtxpthistcalodd","generalTracks pT Distribution", nPtBin, ptBins);
 TH1D *allVtxptHistCaloND = new TH1D("allvtxpthistcalond","generalTracks pT Distribution", nPtBin, ptBins);
+TH1D *allVtxptHistCaloEta1 = new TH1D("allvtxpthistcaloeta1","generalTracks pT Distribution", nPtBin, ptBins);
+TH1D *allVtxptHistCaloSDEta1 = new TH1D("allvtxpthistcalosdeta1","generalTracks pT Distribution", nPtBin, ptBins);
+TH1D *allVtxptHistCaloDDEta1 = new TH1D("allvtxpthistcaloddeta1","generalTracks pT Distribution", nPtBin, ptBins);
+TH1D *allVtxptHistCaloNDEta1 = new TH1D("allvtxpthistcalondeta1","generalTracks pT Distribution", nPtBin, ptBins);
 
 TH1D *proIDnVtx0Hist = new TH1D("proidnvtx0hist","process ID Distribution", 10, 100,110);
 TH1D *proIDnVtxnHist = new TH1D("proidnvtxnhist","process ID Distribution", 10, 100,110);
@@ -80,6 +84,23 @@ TH1D *proIDnVtx0HLTHist = new TH1D("proidnvtx0hlthist","process ID Distribution"
 TH1D *proIDnVtxnHLTHist = new TH1D("proidnvtxnhlthist","process ID Distribution", 10, 100,110);
 TH1D *proIDHLTHist = new TH1D("proidhlthist","process ID Distribution", 10, 100,110);
 TH1D *proIDHLTESHist = new TH1D("proidhlteshist","process ID Distribution", 10, 100,110);
+
+TH1D *nMultHist = new TH1D("nmulthist","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistSD = new TH1D("nmulthistsd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistDD = new TH1D("nmulthistdd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistND = new TH1D("nmulthistnd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta24 = new TH1D("nmulthisteta24","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta10 = new TH1D("nmulthisteta10","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta24SD = new TH1D("nmulthisteta24sd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta10SD = new TH1D("nmulthisteta10sd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta24DD = new TH1D("nmulthisteta24dd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta10DD = new TH1D("nmulthisteta10dd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta24ND = new TH1D("nmulthisteta24nd","Multiplicity Distribution", 200, 0,200);
+TH1D *nMultHistEta10ND = new TH1D("nmulthisteta10nd","Multiplicity Distribution", 200, 0,200);
+int nmult24, nmult10;
+int nmult24sd, nmult10sd;
+int nmult24dd, nmult10dd;
+int nmult24nd, nmult10nd;
 
 const Int_t maxn = 90000;
 Float_t vz;
@@ -139,6 +160,11 @@ Float_t trkDzOverDzError[maxn], trkDxyOverDxyError[maxn];
        if(ne%3000==0)  cout<<"Have run "<<ne<<" events. "<<endl;
        tree->GetEntry(ne);
 
+       nmult24=0; nmult10=0;
+       nmult24sd=0; nmult10sd=0;
+       nmult24dd=0; nmult10dd=0;
+       nmult24nd=0; nmult10nd=0;
+
        nVzHistNoES->Fill(nVtx*pVtx);
        if(HLT_L1MinimumBiasHF1OR_v1==1) 
          nVzHistNoESWithHLT->Fill(nVtx*pVtx);
@@ -169,6 +195,15 @@ Float_t trkDzOverDzError[maxn], trkDxyOverDxyError[maxn];
 
          if(nVtx==1)
            vzHistnVz1->Fill(vz);
+
+         nMultHist->Fill(nTrk);
+         if(processid==103 || processid==104)
+           nMultHistSD->Fill(nTrk);
+         if(processid==105)
+           nMultHistDD->Fill(nTrk);
+         if(processid==101)
+           nMultHistND->Fill(nTrk);
+
          for(int ni=0;ni<nTrk;ni++){
 
            if(!(highPurity[ni]&&trkPtError[ni]/trkPt[ni]<0.3&&trkPt[ni]>0.4&&trkPt[ni]<120.8&&fabs(trkEta[ni])<2.4)) continue;
@@ -199,14 +234,46 @@ Float_t trkDzOverDzError[maxn], trkDxyOverDxyError[maxn];
            }          
            if(!isCompatibleWithVertex) continue;
            allVtxptHistCalo->Fill(trkPt[ni]);
-           if(processid==103 || processid==104)
-             allVtxptHistCaloSD->Fill(trkPt[ni]);
-           if(processid==105)
-             allVtxptHistCaloDD->Fill(trkPt[ni]);
-           if(processid==101)
-             allVtxptHistCaloND->Fill(trkPt[ni]);
+           if(fabs(trkEta[ni])<1.0) 
+             allVtxptHistCaloEta1->Fill(trkPt[ni]);
+           nmult24++;
+           if(fabs(trkEta[ni])<1.0)
+             nmult10++;
 
-         }
+           if(processid==103 || processid==104){
+             allVtxptHistCaloSD->Fill(trkPt[ni]);
+             if(fabs(trkEta[ni])<1.0)
+               allVtxptHistCaloSDEta1->Fill(trkPt[ni]);
+             nmult24sd++;
+             if(fabs(trkEta[ni])<1.0)
+               nmult10sd++;
+           }
+           if(processid==105){
+             allVtxptHistCaloDD->Fill(trkPt[ni]);
+             if(fabs(trkEta[ni])<1.0)
+               allVtxptHistCaloDDEta1->Fill(trkPt[ni]);
+             nmult24dd++;
+             if(fabs(trkEta[ni])<1.0)
+               nmult10dd++;
+           }
+           if(processid==101){
+             allVtxptHistCaloND->Fill(trkPt[ni]);
+             if(fabs(trkEta[ni])<1.0)
+               allVtxptHistCaloNDEta1->Fill(trkPt[ni]);
+             nmult24nd++;
+             if(fabs(trkEta[ni])<1.0)
+               nmult10nd++;
+           }
+
+         }//end of ntrk
+         nMultHistEta24->Fill(nmult24);
+         nMultHistEta10->Fill(nmult10);
+         nMultHistEta24SD->Fill(nmult24sd);
+         nMultHistEta10SD->Fill(nmult10sd);
+         nMultHistEta24DD->Fill(nmult24dd);
+         nMultHistEta10DD->Fill(nmult10dd);
+         nMultHistEta24ND->Fill(nmult24nd);
+         nMultHistEta10ND->Fill(nmult10nd);
      }
 
 //////
@@ -231,6 +298,10 @@ outFileName = outFile;
   allVtxptHistCaloSD->Write();
   allVtxptHistCaloDD->Write();
   allVtxptHistCaloND->Write();
+  allVtxptHistCaloEta1->Write();
+  allVtxptHistCaloSDEta1->Write();
+  allVtxptHistCaloDDEta1->Write();
+  allVtxptHistCaloNDEta1->Write();
   proIDnVtx0Hist->Write();
   proIDnVtxnHist->Write();
   proIDAllHist->Write();
@@ -240,6 +311,18 @@ outFileName = outFile;
   proIDnVtxnHLTHist->Write();
   proIDHLTHist->Write();
   proIDHLTESHist->Write();
+  nMultHist->Write();
+  nMultHistSD->Write();
+  nMultHistDD->Write();
+  nMultHistND->Write();
+  nMultHistEta24->Write();
+  nMultHistEta10->Write();
+  nMultHistEta24SD->Write();
+  nMultHistEta10SD->Write();
+  nMultHistEta24DD->Write();
+  nMultHistEta10DD->Write();
+  nMultHistEta24ND->Write();
+  nMultHistEta10ND->Write();
   outFiles->Close();
 
   delete vzHist;
@@ -259,6 +342,10 @@ outFileName = outFile;
   delete allVtxptHistCaloSD;
   delete allVtxptHistCaloDD;
   delete allVtxptHistCaloND;
+  delete allVtxptHistCaloEta1;
+  delete allVtxptHistCaloSDEta1;
+  delete allVtxptHistCaloDDEta1;
+  delete allVtxptHistCaloNDEta1;
   delete proIDnVtx0Hist;
   delete proIDnVtxnHist;
   delete proIDAllHist;
@@ -268,6 +355,18 @@ outFileName = outFile;
   delete proIDnVtxnHLTHist;
   delete proIDHLTHist;
   delete proIDHLTESHist;
+  delete nMultHist;
+  delete nMultHistSD;
+  delete nMultHistDD;
+  delete nMultHistND;
+  delete nMultHistEta24;
+  delete nMultHistEta10;
+  delete nMultHistEta24SD;
+  delete nMultHistEta10SD;
+  delete nMultHistEta24DD;
+  delete nMultHistEta10DD;
+  delete nMultHistEta24ND;
+  delete nMultHistEta10ND;
 
 }
 
