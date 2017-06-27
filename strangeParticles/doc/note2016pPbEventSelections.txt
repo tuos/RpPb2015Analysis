@@ -1,0 +1,47 @@
+
+Trigger path: HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part*(1~8)
+[6/27/17, 10:35:02 AM] Shengquan Tuo: Selections:
+[6/27/17, 10:35:06 AM] Shengquan Tuo: pPAprimaryVertexFilter
+[6/27/17, 10:35:10 AM] Shengquan Tuo: pBeamScrapingFilter
+[6/27/17, 10:35:14 AM] Shengquan Tuo: phfCoincFilter1
+[6/27/17, 10:35:18 AM] Shengquan Tuo: pVertexFilterCutGplus
+Globaltag: 80X_dataRun2_Prompt_v15? 
+Should be 80X_dataRun2_v19
+
+PARun2016B: 5 TeV pPb, /PAMinimumBias1/PARun2016B-PromptReco-v1/AOD  -- /PAMinimumBias8/PARun2016B-PromptReco-v1/AOD
+(CMSSW_8_0_24 from PromptReco) 
+
+PARun2016C: 8 TeV pPb, 
+
+PARun2016D: 5 TeV pPb, /PAMinimumBias1/PARun2016D-PromptReco-v1/AOD  -- /PAMinimumBias20/PARun2016D-PromptReco-v1/AOD 
+(CMSSW_8_0_24 from PromptReco)
+
+-----
+cmsrel CMSSW_8_0_28
+cd CMSSW_8_0_28/src
+cmsenv
+
+Package setup following Forest setup:
+git cms-merge-topic -u CmsHI:forest_CMSSW_8_0_28
+git remote add cmshi git@github.com:CmsHI/cmssw.git
+git fetch cmshi
+git checkout -b forest_CMSSW_8_0_28 remotes/cmshi/forest_CMSSW_8_0_28
+scram build -j4
+
+New EDAnalyzer:
+mkdir Analysis
+cd Analysis/
+mkedanlzr Test2016pPbAnalysis
+cd Test2016pPbAnalysis/
+vi plugins/BuildFile.xml
+vi plugins/Test2016pPbAnalysis.cc
+scramv1 b -j4
+
+Set up cfg:
+cd test/
+vi ConfFile_cfg.py
+cmsRun ConfFile_cfg.py
+
+
+
+
